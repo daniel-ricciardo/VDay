@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Trisha ❤️</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,700&family=Dancing+Script:wght@500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'val-pink': '#FFB7C5',
+                        'val-red': '#E11D48',
+                        'lego-yellow': '#FFD700',
+                        'lego-red': '#EF4444',
+                        'f1-red': '#FF1801',
+                        'dark-slate': '#1E293B',
+                    },
+                    fontFamily: {
+                        'script': ['Pacifico', 'cursive'],
+                        'body': ['Nunito', 'sans-serif'],
+                        'heading': ['Playfair Display', 'serif'],
+                        'handwriting': ['Dancing Script', 'cursive'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'drive': 'drive 3s linear infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'blob': "blob 7s infinite",
+                        'unfold': 'unfold 1s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        drive: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100vw)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        blob: {
+                            "0%": { transform: "translate(0px, 0px) scale(1)" },
+                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                            "100%": { transform: "translate(0px, 0px) scale(1)" }
+                        },
+                        unfold: {
+                            "0%": { transform: "scaleY(0)", opacity: "0" },
+                            "100%": { transform: "scaleY(1)", opacity: "1" }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Sunflower Animation */
+        .sunflower {
+            position: absolute;
+            opacity: 0.6;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Lego Block Styling */
+        .lego-brick {
+            box-shadow: inset -4px -4px 0px rgba(0, 0, 0, 0.1), inset 4px 4px 0px rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .lego-stud {
+            position: absolute;
+            top: -4px;
+            height: 6px;
+            width: 14px;
+            background-color: inherit;
+            border-radius: 4px;
+            box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Glassmorphism */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Modern Outro Card */
+        .ticket-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fff1f2 100%);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Paper texture for letter */
+        .paper-texture {
+            background-color: #fffdf0;
+            background-image: linear-gradient(rgba(200, 200, 200, 0.1) 1px, transparent 1px);
+            background-size: 100% 1.5rem;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #ffe4e6;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e11d48;
+            border-radius: 5px;
+        }
+
+        .hidden-transition {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+        }
+
+        .show-transition {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quiz-btn {
+            transition: all 0.2s;
+        }
+
+        .quiz-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body class="bg-pink-50 text-gray-800 antialiased">
+
+    <!-- Music Audio (Hidden) -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="Ed Sheeran - Dive Official Audio.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Overlay / Start Screen -->
+    <div id="start-overlay"
+        class="fixed inset-0 z-50 bg-val-pink flex flex-col items-center justify-center transition-opacity duration-1000">
+        <h1 class="text-4xl md:text-6xl font-script text-white mb-8 animate-bounce">Hey Trisha!</h1>
+        <button onclick="startExperience()"
+            class="bg-white text-val-red px-8 py-4 rounded-full font-bold text-xl shadow-lg hover:scale-110 transition-transform flex items-center gap-2">
+            <i class="fas fa-play"></i> Start Experience
+        </button>
+        <p class="mt-4 text-white opacity-80 text-sm">(Turn up the volume! 🎵)</p>
+    </div>
+
+    <!-- Navigation -->
+    <nav
+        class="fixed top-0 w-full z-40 bg-white/80 backdrop-blur-md shadow-sm py-4 px-6 flex justify-between items-center">
+        <span class="font-script text-2xl text-val-red">Baller & Trisha's V-Day</span>
+        <div class="flex gap-4">
+            <button onclick="toggleMusic()" class="text-val-red hover:scale-110 transition"><i id="music-icon"
+                    class="fas fa-volume-up"></i></button>
+        </div>
+    </nav>
+
+    <!-- SECTION 1: HERO / SUNFLOWER -->
+    <section
+        class="min-h-screen flex flex-col items-center justify-center relative overflow-hidden text-center px-4 pt-20">
+        <!-- Background Sunflowers -->
+        <div class="sunflower text-lego-yellow text-6xl top-20 left-10 animate-spin-slow"><i class="fas fa-sun"></i>
+        </div>
+        <div class="sunflower text-lego-yellow text-8xl bottom-20 right-10 animate-spin-slow"
+            style="animation-direction: reverse;"><i class="fas fa-sun"></i></div>
+        <div class="sunflower text-orange-400 text-4xl top-1/2 left-5 animate-float"><i class="fas fa-sun"></i></div>
+        <div class="sunflower text-orange-400 text-5xl top-1/3 right-1/4 animate-float" style="animation-delay: 1s;"><i
+                class="fas fa-sun"></i></div>
+
+        <div class="z-10 glass-card p-6 rounded-3xl shadow-xl max-w-2xl border-6 border-white/50">
+            <h1 class="text-5xl md:text-7xl font-script text-val-red mb-4">Happy Valentine's Day Meri Trishudii!!!</h1>
+            <p class="text-xl md:text-2xl text-gray-600 leading-relaxed font-body">
+                Its not much, but I would be truly happy if it makes you smile today🌻 <br>
+                Here is a little something for you baby.
+            </p>
+            <div class="mt-8 animate-bounce">
+                <a href="#lego" class="text-val-red text-3xl"><i class="fas fa-chevron-down"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: LEGO BUILDER (Interactive Quiz) -->
+    <section id="lego" class="min-h-screen bg-yellow-50 flex flex-col items-center justify-center px-4 relative">
+        <div class="max-w-4xl w-full text-center">
+            <div class="mb-6">
+                <i class="fas fa-cube text-5xl text-blue-500 mb-4 animate-bounce"></i>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2 font-heading">I Heard You Like Building
+                    Legos</h2>
+                <p class="text-lg text-gray-600">Sach sach jawab dena ❤️</p>
+            </div>
+
+            <div
+                class="glass-card p-6 md:p-8 rounded-xl shadow-2xl relative min-h-[450px] flex flex-col items-center justify-between border-b-8 border-gray-200">
+
+                <!-- The Lego Grid -->
+                <div id="lego-container"
+                    class="grid grid-cols-7 gap-1 w-64 md:w-80 mx-auto transition-all duration-500 mb-8 mt-4">
+                    <!-- Bricks generated by JS -->
+                </div>
+
+                <!-- Quiz Container -->
+                <div id="quiz-container" class="w-full max-w-md mx-auto bg-white/90 p-4 rounded-lg shadow-sm">
+                    <h3 id="question-text" class="text-xl font-bold text-gray-800 mb-4">Question goes here?</h3>
+                    <div id="options-container" class="grid grid-cols-1 gap-3">
+                        <!-- Options injected via JS -->
+                    </div>
+                </div>
+
+                <div id="lego-complete-msg" class="hidden text-center animate-fade-in">
+                    <p class="text-3xl font-script text-val-red mb-2">Masterpiece Complete! ❤️</p>
+                    <p class="text-gray-500">Just like us, it's a perfect fit.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: GYM / FITNESS -->
+    <section
+        class="min-h-screen bg-dark-slate text-white flex flex-col items-center justify-center px-4 relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute top-0 w-full h-full opacity-10 pointer-events-none">
+            <i class="fas fa-dumbbell text-9xl absolute top-10 left-10 rotate-12"></i>
+            <i class="fas fa-heartbeat text-9xl absolute bottom-10 right-10 -rotate-12"></i>
+        </div>
+
+        <div class="z-10 text-center max-w-3xl hidden-transition" id="gym-content">
+            <div class="bg-gray-800 p-4 rounded-full inline-block mb-6 shadow-[0_0_20px_rgba(239,68,68,0.5)]">
+                <i class="fas fa-fire text-6xl text-red-500 animate-pulse-fast"></i>
+            </div>
+            <h2 class="text-4xl md:text-6xl font-black italic uppercase tracking-wider mb-6 font-heading">
+                Would you take me as your <span class="text-red-500 font-bold">gymbro</span>? I have a lot of convincing
+                points!
+            </h2>
+            <p class="text-2xl md:text-3xl font-light mb-8 text-gray-300">
+                I can see you everyday. I can make you eat protein even when
+                you don't feel like!🥰
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+                <div
+                    class="bg-gray-700/50 p-6 rounded-lg border border-gray-600 hover:border-red-500 transition hover:-translate-y-1 duration-300">
+                    <i class="fas fa-check text-green-400 text-2xl mb-2"></i>
+                    <h3 class="font-bold text-xl">Spotter for Life</h3>
+                    <p class="text-sm text-gray-400">I'll always have your back</p>
+                </div>
+                <div
+                    class="bg-gray-700/50 p-6 rounded-lg border border-gray-600 hover:border-red-500 transition hover:-translate-y-1 duration-300">
+                    <i class="fas fa-check text-green-400 text-2xl mb-2"></i>
+                    <h3 class="font-bold text-xl">Cheat Meals</h3>
+                    <p class="text-sm text-gray-400">Street food and chipdi chupdi baate</p>
+                </div>
+                <div
+                    class="bg-gray-700/50 p-6 rounded-lg border border-gray-600 hover:border-red-500 transition hover:-translate-y-1 duration-300">
+                    <i class="fas fa-check text-green-400 text-2xl mb-2"></i>
+                    <h3 class="font-bold text-xl">Fails & Gains</h3>
+                    <p class="text-sm text-gray-400">Its a whole package</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: F1 PROPOSAL -->
+    <section id="f1"
+        class="min-h-screen bg-white flex flex-col items-center justify-center px-4 relative overflow-hidden">
+        <!-- Checkered flag pattern bar -->
+        <div
+            class="absolute top-0 w-full h-8 bg-[url('https://www.transparenttextures.com/patterns/checkered-pattern.png')] opacity-50">
+        </div>
+        <div
+            class="absolute bottom-0 w-full h-8 bg-[url('https://www.transparenttextures.com/patterns/checkered-pattern.png')] opacity-50">
+        </div>
+
+        <!-- Animated Car -->
+        <div class="absolute bottom-20 left-0 w-full pointer-events-none z-0">
+            <i class="fas fa-car-side text-6xl text-f1-red animate-drive opacity-20"></i>
+        </div>
+
+        <div
+            class="z-10 max-w-4xl w-full bg-gray-50 p-8 md:p-12 rounded-2xl shadow-2xl border-l-8 border-f1-red text-center">
+            <div class="flex justify-center items-center gap-4 mb-6">
+                <i class="fas fa-flag-checkered text-4xl text-gray-800"></i>
+                <span class="text-lg uppercase tracking-widest font-bold text-gray-500">Grand Prix of Love</span>
+                <i class="fas fa-flag-checkered text-4xl text-gray-800"></i>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-black mb-6 text-gray-900 font-heading">
+                Race Week Pending... 🏎️💨
+            </h2>
+
+            <p class="text-xl text-gray-700 mb-8">
+                Please be my teammate, a strategist, and a co-pilot for the couch
+            </p>
+
+            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-inner mb-8">
+                <h3 class="text-2xl font-bold text-f1-red mb-2">The Question:</h3>
+                <p class="text-lg font-medium">Will you start the new F1 season with me in Goa?</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-center gap-6 mt-4 relative h-20">
+                <button onclick="acceptProposal()"
+                    class="bg-f1-red text-white font-bold text-xl py-4 px-12 rounded-full shadow-lg hover:bg-red-700 transform hover:scale-105 transition-all z-20">
+                    YES, Box Box! 🏁
+                </button>
+
+                <button id="no-btn" onmouseover="moveButton()" onclick="moveButton()"
+                    class="bg-gray-300 text-gray-600 font-bold text-xl py-4 px-12 rounded-full shadow-lg absolute md:relative transition-all duration-200">
+                    No (Flagged) 🚩
+                </button>
+            </div>
+
+            <div id="success-msg" class="hidden mt-8 p-4 bg-green-100 text-green-800 rounded-lg animate-bounce">
+                <h4 class="font-bold text-xl">It's Lights Out and Away We Go! 🏎️❤️</h4>
+                <p>Pit stop on the Beach!!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: OUTRO WITH UNLOCKABLE LETTER -->
+    <section class="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 relative py-20">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div
+                class="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob">
+            </div>
+            <div
+                class="absolute top-[20%] -left-[10%] w-[500px] h-[500px] bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000">
+            </div>
+            <div
+                class="absolute -bottom-[20%] right-[20%] w-[500px] h-[500px] bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000">
+            </div>
+        </div>
+
+        <div class="z-10 ticket-card p-10 md:p-14 rounded-3xl max-w-xl w-full text-center border border-white/40 mb-10">
+            <div class="mb-8 relative">
+                <div
+                    class="w-24 h-24 bg-gradient-to-tr from-val-red to-pink-500 rounded-full mx-auto flex items-center justify-center shadow-lg text-white text-3xl mb-4">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-heading font-bold text-gray-800 mb-2">See You Soon</h2>
+                <div class="h-1 w-20 bg-val-red mx-auto rounded-full"></div>
+            </div>
+
+            <p class="text-gray-600 text-lg mb-6 font-body leading-relaxed">
+                The countdown is on. <br>
+                I have some cute gifts for you!
+            </p>
+
+            <!-- INVITE / UNLOCK CARD -->
+            <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 mb-8 text-left border border-gray-200 shadow-md">
+                <div class="flex items-center gap-3 mb-4 border-b border-gray-200 pb-3">
+                    <div class="bg-red-100 text-val-red p-2 rounded-lg">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Official Invite</p>
+                        <p class="text-base font-bold text-gray-800">Date Vacation 🌻🏎️</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-sm text-gray-600 mb-5">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-1">
+                        <span class="font-bold text-gray-500 text-xs uppercase">From</span>
+                        <span
+                            class="font-medium bg-gray-100 px-2 py-1 rounded text-gray-800">b.ajinkya09@gmail.com</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-1">
+                        <span class="font-bold text-gray-500 text-xs uppercase">To</span>
+                        <span class="font-medium bg-gray-100 px-2 py-1 rounded text-gray-800">Trisha (VIP)</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-1">
+                        <span class="font-bold text-gray-500 text-xs uppercase">When</span>
+                        <span class="font-bold text-val-red bg-red-50 px-2 py-1 rounded">March 6, 2026</span>
+                    </div>
+                </div>
+
+                <button onclick="unlockSecretMessage()" id="unlock-btn"
+                    class="flex items-center justify-center w-full bg-val-red text-white font-bold py-3 rounded-lg hover:bg-red-600 hover:-translate-y-1 transition-all shadow-md group">
+                    <i class="fas fa-key mr-2 group-hover:rotate-12 transition"></i> Would You Like to Save the Date?
+                </button>
+            </div>
+
+            <!-- <div class="flex justify-center gap-8 mb-6 text-gray-400">
+                <div class="flex flex-col items-center gap-2">
+                    <i class="fas fa-heart text-val-red text-2xl animate-pulse"></i>
+                    <span class="text-xs uppercase tracking-widest">Trisha</span>
+                </div>
+                <div class="h-10 w-[1px] bg-gray-300"></div>
+                <div class="flex flex-col items-center gap-2">
+                    <i class="fas fa-infinity text-gray-800 text-2xl"></i>
+                    <span class="text-xs uppercase tracking-widest">Forever</span>
+                </div>
+            </div> -->
+
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+                class="text-gray-400 hover:text-val-red transition text-sm font-semibold uppercase tracking-widest">
+                Replay Experience <i class="fas fa-redo ml-1"></i>
+            </button>
+        </div>
+
+        <!-- HIDDEN SECRET MESSAGE SECTION -->
+        <div id="secret-message-container"
+            class="hidden transition-all duration-1000 transform translate-y-10 opacity-0 w-full max-w-2xl px-4 pb-20 z-10">
+            <div
+                class="paper-texture p-8 md:p-12 rounded-lg shadow-2xl relative overflow-hidden border border-gray-200 rotate-1 transform hover:rotate-0 transition duration-500">
+                <!-- Decorative Tape -->
+                <div
+                    class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4 w-32 h-8 bg-yellow-200/50 rotate-2 shadow-sm">
+                </div>
+
+                <h3 class="font-handwriting text-4xl text-val-red mb-6">My Promise to You...</h3>
+
+                <!-- EDIT YOUR MESSAGE HERE -->
+                <p class="font-handwriting text-2xl text-gray-800 leading-relaxed space-y-4">
+                    Dear Trisha, <br><br>
+                    I'm so glad you said yes, I couldn't have asked for a better Valentine.
+                    I miss being with you, I miss watching F1 on the couch with your prized McLaren on the teapoy
+                    waiting to be completed.
+                    I might not express as often as when we were together, but this time I wanted to make this special
+                    because <b>you</b> are special to me.
+                    I long for the days to do it again and much more (like watching Bridgerton of courseeee💝)<br><br>
+
+                    I can't wait for our date vacation. It's going to be legendary. <br><br>
+                    Pack your bags (and your protein powder), our date is on! <br><br>
+
+                    With love,<br>
+                    Baller
+                </p>
+                <!-- END MESSAGE -->
+
+                <div class="absolute bottom-4 right-4 opacity-10">
+                    <i class="fas fa-heart text-8xl text-red-500"></i>
+                </div>
+            </div>
+        </div>
+
+        <footer class="absolute bottom-4 text-gray-400 text-xs uppercase tracking-widest opacity-60">
+            Curated for Trishudi
+        </footer>
+    </section>
+
+    <script>
+        // --- MUSIC LOGIC ---
+        const audio = document.getElementById('bg-music');
+        const overlay = document.getElementById('start-overlay');
+        const musicIcon = document.getElementById('music-icon');
+        let isPlaying = false;
+
+        function startExperience() {
+            overlay.classList.add('opacity-0');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 1000);
+            toggleMusic();
+        }
+
+        function toggleMusic() {
+            if (!audio.paused) {
+                audio.pause();
+                musicIcon.classList.remove('fa-volume-up');
+                musicIcon.classList.add('fa-volume-mute');
+            } else {
+                audio.play().then(() => {
+                    musicIcon.classList.remove('fa-volume-mute');
+                    musicIcon.classList.add('fa-volume-up');
+                }).catch(e => {
+                    console.error("Audio playback failed:", e);
+                    alert("Click 'Start Experience' again or ensure the Google Drive link is public!");
+                });
+            }
+        }
+
+        // Debugging audio loading
+        audio.addEventListener('error', (e) => {
+            console.error("Audio Load Error:", audio.error);
+        });
+
+        // --- LEGO BUILDER LOGIC (UPDATED WITH QUIZ) ---
+        const legoContainer = document.getElementById('lego-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+
+        // Heart Shape Matrix (Total 27 bricks)
+        const heartMatrix = [
+            0, 1, 1, 0, 1, 1, 0, // 4 bricks
+            1, 1, 1, 1, 1, 1, 1, // 7 bricks
+            1, 1, 1, 1, 1, 1, 1, // 7 bricks
+            0, 1, 1, 1, 1, 1, 0, // 5 bricks
+            0, 0, 1, 1, 1, 0, 0, // 3 bricks
+            0, 0, 0, 1, 0, 0, 0  // 1 brick
+        ]; // Total = 27
+
+        let currentBrickIndex = 0;
+        const colors = ['bg-red-500', 'bg-yellow-400', 'bg-blue-500', 'bg-green-500', 'bg-pink-500'];
+
+        // Quiz Data
+        const questions = [
+            { q: "If our team had a flower as a sigil, what'd it be?", options: ["Rose", "Sunflower 🌻", "Tulip"], bricks: 3 },
+            { q: "How would you like to spend our Sundays together?", options: ["Sleeping", "Building Legos 🧱", "Talkkingggg"], bricks: 6 },
+            { q: "What do you think I love the most?", options: ["The Gym 💪", "Playin Football ⚽", "Seeing You ❤️"], bricks: 6 },
+            { q: "Who is my favorite person?", options: ["Trisha💝", "Trisha💌", "Trisha💓"], bricks: 6 },
+            { q: "Ready to meet soon?", options: ["Yes!", "Absolutely!", "Can't wait!"], bricks: 6 }
+        ];
+
+        let currentQuestionIdx = 0;
+
+        function initQuiz() {
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            if (index >= questions.length) {
+                quizContainer.style.display = 'none';
+                document.getElementById('lego-complete-msg').classList.remove('hidden');
+                document.getElementById('lego-complete-msg').classList.add('block');
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#EF4444', '#F59E0B']
+                });
+                return;
+            }
+
+            const q = questions[index];
+            questionText.innerText = q.q;
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-btn w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-2 px-4 rounded border border-blue-200 text-left";
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(q.bricks);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(brickCount) {
+            // Add bricks with slight delay loop
+            let count = 0;
+            const interval = setInterval(() => {
+                addSingleBrick();
+                count++;
+                if (count >= brickCount) clearInterval(interval);
+            }, 100);
+
+            currentQuestionIdx++;
+            showQuestion(currentQuestionIdx);
+        }
+
+        function addSingleBrick() {
+            if (currentBrickIndex >= heartMatrix.length) return;
+
+            // Find next 1 in matrix
+            while (currentBrickIndex < heartMatrix.length && heartMatrix[currentBrickIndex] === 0) {
+                const spacer = document.createElement('div');
+                spacer.className = "w-8 h-8 md:w-10 md:h-10"; // Empty space
+                legoContainer.appendChild(spacer);
+                currentBrickIndex++;
+            }
+
+            if (currentBrickIndex < heartMatrix.length) {
+                const brick = document.createElement('div');
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+                brick.className = `${randomColor} w-8 h-8 md:w-10 md:h-10 lego-brick rounded-sm transform scale-0 transition-transform duration-300`;
+
+                // Add stud
+                const stud = document.createElement('div');
+                stud.className = "lego-stud left-2 md:left-3";
+                brick.appendChild(stud);
+
+                legoContainer.appendChild(brick);
+
+                // Animate in
+                setTimeout(() => {
+                    brick.classList.remove('scale-0');
+                    brick.classList.add('scale-100');
+                }, 50);
+
+                currentBrickIndex++;
+            }
+        }
+
+        // Initialize Lego Grid spacing (Pre-calc spaces if needed or just handle dynamically)
+        initQuiz();
+
+        // --- SCROLL ANIMATION OBSERVER ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show-transition');
+                }
+            });
+        });
+
+        document.querySelectorAll('.hidden-transition').forEach((el) => observer.observe(el));
+
+        // --- F1 BUTTON LOGIC ---
+        function moveButton() {
+            const btn = document.getElementById('no-btn');
+            const container = document.getElementById('f1');
+
+            // Get container bounds
+            const rect = container.getBoundingClientRect();
+
+            // Calculate random position within container
+            const newX = Math.random() * (rect.width - 100);
+            const newY = Math.random() * (rect.height + 50);
+
+            if (window.innerWidth > 768) {
+                btn.style.position = 'absolute';
+                btn.style.left = `${newX}px`;
+                btn.style.top = `${newY}px`;
+            }
+        }
+
+        function acceptProposal() {
+            const msg = document.getElementById('success-msg');
+            msg.classList.remove('hidden');
+            document.getElementById('no-btn').style.display = 'none';
+
+            var duration = 3000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#FF1801', '#ffffff']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#FF1801', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // --- UNLOCK SECRET MESSAGE LOGIC ---
+        function unlockSecretMessage() {
+            const btn = document.getElementById('unlock-btn');
+            const container = document.getElementById('secret-message-container');
+
+            // 1. Confetti
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.8 },
+                colors: ['#E11D48', '#FFB7C5']
+            });
+
+            // 2. Change Button State
+            btn.innerHTML = '<i class="fas fa-lock-open mr-2"></i> Unlocked! Scroll Down 👇';
+            btn.classList.remove('bg-val-red', 'hover:bg-red-600');
+            btn.classList.add('bg-green-500', 'pointer-events-none', 'shadow-none');
+
+            // 3. Reveal Message
+            container.classList.remove('hidden');
+
+            // 4. Animate & Scroll
+            setTimeout(() => {
+                container.classList.remove('translate-y-10', 'opacity-0');
+                container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+    </script>
+</body>
+
+</html>
